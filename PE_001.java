@@ -25,5 +25,5 @@ public class PE_001 {
         int max = (int) 999 / number;
         return number * max * (max + 1) / 2;
     }
-    
+   
 }
