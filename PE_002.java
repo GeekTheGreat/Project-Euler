@@ -25,5 +25,5 @@ public class PE_002 {
         }
         System.out.println("Sum: " + sum);
     }
-    
+   
 }
