@@ -20,3 +20,18 @@
 18. Maximum path sum I
 19. Counting Sundays
 20. Factorial digit sum
+21.
+22.
+23.
+24.
+25.
+26.
+27.
+28.
+29.
+30.
+31.
+32.
+33.
+34.
+35.
