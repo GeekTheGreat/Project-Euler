@@ -1,0 +1,150 @@
+\documentclass[12pt,letterpaper]{article}
+%\usepackage{fullpage}
+\usepackage[top=2cm, bottom=4.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+%\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{tcolorbox}
+
+
+
+\hypersetup{%
+	colorlinks=true,
+	linkcolor=blue,
+	linkbordercolor={0 0 1}
+}
+
+\renewcommand\lstlistingname{Algorithm}
+\renewcommand\lstlistlistingname{Algorithms}
+\def\lstlistingautorefname{Alg.}
+
+\lstdefinestyle{Python}{
+	language        = Python,
+	frame           = lines, 
+	basicstyle      = \footnotesize,
+	keywordstyle    = \color{blue},
+	stringstyle     = \color{green},
+	commentstyle    = \color{red}\ttfamily
+}
+
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.05in}
+
+% Edit these as appropriate
+\newcommand\course{Marie Yau}
+\newcommand\hwnumber{1}                  % <-- homework number
+\newcommand\NetIDa{Problem 14}           % <-- NetID of person #1
+\newcommand\NetIDb{Project Euler}           % <-- NetID of person #2 (Comment this line out for problem sets)
+
+\pagestyle{fancyplain}
+\headheight 35pt
+\lhead{\NetIDa}
+\lhead{\NetIDa\\\NetIDb}                 % <-- Comment this line out for problem sets (make sure you are person #1)
+\chead{\textbf{\Large Longest Collatz Sequence}}
+\rhead{\course \\ \today}
+\lfoot{}
+\cfoot{}
+\rfoot{\small\thepage}
+\headsep 1.5em
+
+\begin{document}
+	
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% problem statement
+%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcolorbox}[colback=gray!5!white,colframe=black!75!black,title=Problem]
+	The following iterative sequence is defined for the set of positive integers:\\
+	$n \rightarrow \frac{n}{2}$ ($n$ is even)\\
+	$n \rightarrow 3\cdot n + 1$ ($n$ is odd)\\
+	Using the rule above and starting with 13, we generate the following sequence:
+	$$13 \rightarrow 40 \rightarrow 20 \rightarrow 10 \rightarrow 5 \rightarrow 16 \rightarrow 8 \rightarrow 4 \rightarrow 2 \rightarrow 1$$
+	It can be seen that this sequence (starting at 13 and finishing at 1) contains 10 terms. Although it has not been proved yet (Collatz Problem), it is thought that all starting numbers finish at 1.\\
+	Which starting number, under one million, produces the longest chain?\\
+	NOTE: Once the chain starts the terms are allowed to go above one million
+\end{tcolorbox}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% solution
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcolorbox}[colback=gray!5!white,colframe=black!75!black,title=Solution]
+	Solution: 837799\\
+	Time: 1.55472
+\end{tcolorbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%explanation
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcolorbox}[colback=gray!5!white,colframe=black!75!black,title=Algorithm]
+If we compute chain for every number from scratch, our program will be recomputing many chains. Moreover, we are only interested in length of chain for every number below 1,000,000. Therefore, it is more time efficient to store length of chain for every number.\\
+The number and its number of terms in sequence can be placed into structure.
+Hash table is an ideal data structure for storing the structures. Since there can be more structures in every bucket of the hash table (Bucket 3 can store structures for number 3 and 1,000,003.), we will use hash table of linked lists.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{014.png}
+	\caption{Hash Table of Linked Lists}
+\end{figure}
+\end{tcolorbox}
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% pseudocode
+%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcolorbox}[colback=gray!5!white,colframe=black!75!black]
+\begin{algorithm}[H]
+	\caption{Find Number With The Longest Chain}\label{euclid}
+	\begin{algorithmic}[1]		
+		\Statex
+		\Function{Main}{}
+		\State{create hash table $hashTable$ of linked lists of structures $\{number, terms\}$ with \hspace*{0.65cm}1,000,000 buckets}
+		\State{insert base case $\{1, 1\}$ to $hashTable$ }
+		\State{create vector $numbersNotInTable$ of integers}
+		\For{$n=2$ to 1,000,000}
+			\State{$number = n$}
+			\State{empty $numbersNotInTable$}
+			\While{$number$ is not in hashTable}
+				\State{push $number$ to the back of $numbersNotInTable$}
+				\State{$number$ = \Call{NextCollatzNumber}{$number$}}
+			\EndWhile
+			\If{$numbersNotInTable$ is not empty}
+				\State \Call{InsertNumbersToTable}{$hashTable$, $numbersNotInTable$, $number$}
+			\EndIf
+		\EndFor
+		\State{find number with the most terms in $hashTable$}
+		\EndFunction
+		
+		\Statex
+		
+		\Function{NextCollatzNumber}{$number$}
+			\If{$number$ is even}
+				\State{\Return $\frac{number}{2}$}
+			\Else
+				\State{\Return $3\cdot number + 1$}
+			\EndIf
+		
+		\EndFunction
+		
+		\Statex
+		
+		\Function{InsertNumbersToTable}{$hashTable$, $numbersNotInTable$, $number$}
+			\State{search hash table for number of terms of $number$}
+			\State{set $terms$ to number of terms of $number$}
+			\State{set $size$ to size of $numbersNotInTable$ }
+			\For{i = 0 to $size$}
+				\State{insert number at index $size -1-i$ in $numbersNotInTable$ and number of \hspace*{1.13cm} terms $terms +i+1$ to $hashTable$ }
+			\EndFor
+		
+		
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+\end{tcolorbox}
+
+\end{document}
